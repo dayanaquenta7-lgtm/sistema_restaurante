@@ -1,0 +1,195 @@
+/* Super Pollitos El Rey — colores del negocio: ROJO, AMARILLO y AZUL.
+   Rojo = acción principal · Azul = elegido / información · Amarillo = resaltar y avisar.
+   Sin fuentes ni imágenes de internet: todo funciona sin wifi. */
+:root{
+  --rojo:#d7191f; --rojo-osc:#a30f14; --rojo-claro:#ffe3e1;
+  --amarillo:#ffc400; --amarillo-osc:#c99700; --amarillo-claro:#fff4c2;
+  --azul:#1d3f9f; --azul-osc:#0f2466; --azul-claro:#e5ecfb;
+  --fondo:#fffaf0; --tarjeta:#ffffff; --texto:#1b1a24; --suave:#5d6075; --linea:#e8dfc8;
+  --radio:18px; --sombra:0 2px 0 rgba(15,36,102,.08),0 6px 16px rgba(15,36,102,.07);
+}
+*{box-sizing:border-box}
+html{font-size:18px;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--fondo);color:var(--texto);font-family:"Segoe UI",system-ui,-apple-system,Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.35;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+input,textarea{user-select:text;-webkit-user-select:text}
+h1{font-size:1.55rem;margin:.2rem 0 .8rem;color:var(--azul-osc);font-weight:900;letter-spacing:-.01em}
+h2{font-size:1.1rem;margin:1.3rem 0 .55rem;color:var(--azul);font-weight:800;text-transform:uppercase;letter-spacing:.04em}
+h3{font-size:1rem;margin:.8rem 0 .3rem}
+button,input,select,textarea{font:inherit;color:inherit}
+button{touch-action:manipulation}
+
+/* ---------- estructura: barra azul arriba, menú abajo (celular) o a un lado (pantalla grande) */
+.barra{position:sticky;top:0;z-index:6;background:var(--azul-osc);color:#fff;display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:5px solid var(--amarillo);box-shadow:0 3px 0 var(--rojo)}
+.barra .marca{flex:1;display:flex;align-items:center;gap:10px;font-weight:900;font-size:1.15rem;line-height:1.05}
+.barra .marca small{display:block;color:var(--amarillo);font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.barra .logo{width:42px;height:42px;border-radius:12px;background:var(--rojo);border:3px solid var(--amarillo);display:grid;place-items:center;font-size:1.4rem}
+.barra .quien{color:#dbe4ff;font-size:.82rem;text-align:right;line-height:1.2}
+.barra .quien b{color:#fff}
+.barra .btn.sec{background:transparent;color:#fff;border-color:#fff6}
+.contenedor{max-width:1180px;margin:0 auto;padding:14px 16px 150px}
+.nav{position:fixed;bottom:0;left:0;right:0;z-index:6;background:var(--azul-osc);border-top:4px solid var(--amarillo);display:flex;overflow-x:auto;padding-bottom:env(safe-area-inset-bottom)}
+.nav a{flex:1 0 auto;min-width:76px;text-align:center;padding:8px 6px 7px;text-decoration:none;color:#c9d6ff;font-size:.74rem;font-weight:800}
+.nav a .ico{display:block;font-size:1.5rem;line-height:1.2}
+.nav a.activo{color:var(--azul-osc);background:var(--amarillo)}
+@media(min-width:900px){
+  .nav{top:77px;bottom:0;right:auto;width:104px;flex-direction:column;border-top:0;border-right:4px solid var(--amarillo);overflow-y:auto}
+  .nav a{flex:0 0 auto;padding:14px 4px;font-size:.78rem}
+  .contenedor{margin-left:120px;max-width:none;padding-right:24px;padding-bottom:60px}
+}
+
+/* ---------- tarjetas, filas, textos */
+.tarjeta{background:var(--tarjeta);border:2px solid var(--linea);border-radius:var(--radio);padding:16px;margin:0 0 14px;box-shadow:var(--sombra)}
+.tarjeta.azul{background:var(--azul);border-color:var(--azul-osc);color:#fff}
+.tarjeta.amarilla{background:var(--amarillo-claro);border-color:var(--amarillo)}
+.fila{display:flex;gap:10px;align-items:center;flex-wrap:wrap} .fila.sep{justify-content:space-between}
+.col{display:flex;flex-direction:column;gap:12px}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+.grid.ancho{grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+.grid.dos{grid-template-columns:1fr 1fr} .grid.tres{grid-template-columns:repeat(3,1fr)}
+.suave{color:var(--suave)} .centro{text-align:center} .der{text-align:right} .mono{font-variant-numeric:tabular-nums}
+.grande-num{font-size:2.1rem;font-weight:900;color:var(--azul-osc)}
+.oculto{display:none!important}
+.linea{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:.5rem 0;border-bottom:2px dashed var(--linea)}
+.linea:last-child{border-bottom:0}
+table{width:100%;border-collapse:collapse;font-size:.92rem} th,td{padding:.5rem .4rem;border-bottom:1px solid var(--linea);text-align:left;vertical-align:top} th{color:var(--azul);font-size:.78rem;text-transform:uppercase}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+.tabla-scroll{overflow-x:auto}
+
+/* ---------- botones */
+.btn{border:3px solid var(--rojo);background:var(--rojo);color:#fff;border-radius:16px;padding:.8rem 1.1rem;font-weight:900;cursor:pointer;min-height:58px;text-align:center;box-shadow:0 4px 0 var(--rojo-osc);transition:transform .06s,box-shadow .06s}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--rojo-osc)}
+.btn:disabled{opacity:.4;cursor:not-allowed;box-shadow:none}
+.btn.sec{background:#fff;color:var(--azul);border-color:var(--azul);box-shadow:0 4px 0 var(--azul-osc)}
+.btn.az,.btn.ok{background:var(--azul);border-color:var(--azul-osc);color:#fff;box-shadow:0 4px 0 var(--azul-osc)}
+.btn.am{background:var(--amarillo);border-color:var(--amarillo-osc);color:var(--azul-osc);box-shadow:0 4px 0 var(--amarillo-osc)}
+.btn.mal{background:#fff;color:var(--rojo);border-color:var(--rojo);box-shadow:0 4px 0 var(--rojo-osc)}
+.btn.chico{min-height:44px;padding:.4rem .85rem;font-size:.9rem;border-radius:12px;box-shadow:0 3px 0 rgba(0,0,0,.18)}
+.btn.grande{min-height:72px;font-size:1.3rem;border-radius:20px}
+.btn.bloque{display:block;width:100%}
+.btn:focus-visible,.opcion:focus-visible,.teclado button:focus-visible{outline:4px solid var(--amarillo);outline-offset:2px}
+
+/* ---------- fichas para elegir (platos, gaseosas, turnos, motivos...) */
+.opcion{position:relative;border:3px solid var(--linea);background:#fff;border-radius:18px;padding:.8rem .9rem;min-height:84px;cursor:pointer;text-align:left;font-weight:900;font-size:1.05rem;box-shadow:0 4px 0 var(--linea);transition:transform .06s}
+.opcion:active{transform:translateY(3px);box-shadow:0 1px 0 var(--linea)}
+.opcion small{display:block;font-weight:700;color:var(--suave);font-size:.82rem;margin-top:2px}
+.opcion .precio{display:block;font-size:1.25rem;color:var(--rojo);font-weight:900}
+.opcion.activa{border-color:var(--azul);background:var(--azul);color:#fff;box-shadow:0 4px 0 var(--azul-osc)}
+.opcion.activa small,.opcion.activa .precio{color:var(--amarillo)}
+.opcion:disabled,.opcion.agotado{opacity:.4;cursor:not-allowed;background:repeating-linear-gradient(135deg,#f3eee0,#f3eee0 8px,#fff 8px,#fff 16px)}
+.opcion.plato{border-color:var(--rojo);box-shadow:0 4px 0 var(--rojo-osc);border-top-width:10px}
+.opcion.gaseosa{border-color:var(--azul);box-shadow:0 4px 0 var(--azul-osc);border-top-width:10px}
+.opcion.porcion{border-color:var(--amarillo-osc);box-shadow:0 4px 0 var(--amarillo-osc);border-top-width:10px}
+.opcion .en-pedido{position:absolute;top:-14px;right:-8px;min-width:34px;height:34px;border-radius:17px;background:var(--amarillo);color:var(--azul-osc);border:3px solid var(--azul-osc);display:grid;place-items:center;font-weight:900;font-size:1rem;padding:0 6px}
+.opcion.corta{min-height:60px;text-align:center;display:grid;place-items:center}
+.bajo{display:inline-block;margin-top:3px;padding:.05rem .5rem;border-radius:999px;background:var(--amarillo);color:var(--azul-osc);font-size:.75rem;font-weight:900}
+
+.chip{display:inline-block;border-radius:999px;padding:.18rem .7rem;font-size:.8rem;font-weight:900;background:var(--azul-claro);color:var(--azul)}
+.chip.ok{background:var(--azul-claro);color:var(--azul)} .chip.alerta{background:var(--amarillo);color:var(--azul-osc)} .chip.mal{background:var(--rojo-claro);color:var(--rojo-osc)}
+.aviso{border-radius:14px;padding:.8rem 1rem;margin:.5rem 0;font-weight:800;background:var(--azul-claro);color:var(--azul-osc);border:2px solid var(--azul)}
+.aviso.ok{background:var(--azul-claro);color:var(--azul-osc);border-color:var(--azul)}
+.aviso.alerta{background:var(--amarillo-claro);color:#5a4300;border-color:var(--amarillo)}
+.aviso.mal{background:var(--rojo-claro);color:var(--rojo-osc);border-color:var(--rojo)}
+
+/* ---------- campos (solo para lo que de verdad hay que escribir: nombres y notas) */
+label{display:block;font-weight:800;margin:.4rem 0 .25rem;color:var(--azul-osc)}
+input,select,textarea{width:100%;border:3px solid var(--linea);background:#fff;border-radius:14px;padding:.7rem .85rem;min-height:56px}
+input:focus,select:focus,textarea:focus{outline:0;border-color:var(--azul);box-shadow:0 0 0 4px var(--azul-claro)}
+.valor-boton{width:100%;display:flex;justify-content:space-between;align-items:center;border:3px solid var(--azul);background:var(--azul-claro);border-radius:14px;min-height:60px;padding:.4rem .9rem;font-weight:900;font-size:1.3rem;color:var(--azul-osc);cursor:pointer}
+.valor-boton.vacio{color:var(--suave);font-weight:700;font-size:1rem;border-style:dashed}
+.valor-boton span.lapiz{font-size:1.1rem}
+
+/* ---------- teclado numérico en pantalla */
+.pantallita{background:var(--azul-osc);color:#fff;border-radius:16px;padding:.5rem 1rem;text-align:right;font-size:2.4rem;font-weight:900;min-height:70px;display:flex;align-items:center;justify-content:flex-end;gap:8px;border-bottom:5px solid var(--amarillo)}
+.pantallita small{font-size:1rem;color:var(--amarillo);margin-right:auto}
+.teclado{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:360px;margin:12px auto}
+.teclado button{min-height:70px;font-size:1.7rem;font-weight:900;border-radius:18px;border:3px solid var(--azul);background:#fff;color:var(--azul-osc);cursor:pointer;box-shadow:0 4px 0 var(--azul-osc)}
+.teclado button:active{transform:translateY(3px);box-shadow:0 1px 0 var(--azul-osc);background:var(--azul-claro)}
+.teclado button.rojo{background:var(--rojo);color:#fff;border-color:var(--rojo-osc);box-shadow:0 4px 0 var(--rojo-osc)}
+.teclado button.ok{background:var(--amarillo);color:var(--azul-osc);border-color:var(--amarillo-osc);box-shadow:0 4px 0 var(--amarillo-osc)}
+.atajos{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 0}
+.atajos .opcion{min-height:52px;padding:.4rem .9rem;border-radius:14px;font-size:1.05rem;flex:1 0 auto;text-align:center}
+.puntos{display:flex;gap:12px;justify-content:center;margin:12px 0;min-height:24px}
+.puntos i{width:22px;height:22px;border-radius:50%;border:3px solid var(--azul);display:block;background:#fff} .puntos i.lleno{background:var(--rojo);border-color:var(--rojo)}
+
+/* ---------- ventanas y avisos */
+.sombra-fondo{position:fixed;inset:0;background:rgba(15,36,102,.6);z-index:20;display:flex;align-items:flex-end;justify-content:center}
+.modal{background:var(--fondo);border-radius:26px 26px 0 0;padding:18px;width:100%;max-width:560px;max-height:94vh;overflow:auto;border-top:8px solid var(--amarillo)}
+.modal h1{margin:0}
+@media(min-width:700px){.sombra-fondo{align-items:center}.modal{border-radius:26px;border:0;border-top:8px solid var(--amarillo)}}
+.toast{position:fixed;left:50%;top:84px;transform:translateX(-50%);z-index:40;padding:.9rem 1.2rem;border-radius:16px;font-weight:900;max-width:92vw;box-shadow:0 8px 22px rgba(0,0,0,.35);font-size:1.05rem;text-align:center}
+.toast.ok{background:var(--azul);color:#fff;border:3px solid var(--amarillo)} .toast.mal{background:var(--rojo);color:#fff;border:3px solid #fff}
+.mensaje-grande{font-size:1.6rem;font-weight:900;padding:1rem;border-radius:18px;margin:12px auto;max-width:520px}
+
+/* ---------- pantalla de VENDER: platos a la izquierda, pedido a la derecha */
+.pos{display:grid;gap:16px}
+.pos-pedido{background:#fff;border:3px solid var(--azul);border-radius:22px;padding:14px;box-shadow:var(--sombra);scroll-margin-top:90px}
+.pos-pedido h2{margin-top:0}
+.pos-pedido{margin-bottom:96px}
+@media(max-width:520px){.barra .marca{font-size:1rem}.barra .marca small{display:none}.barra .logo{width:38px;height:38px}}
+@media(min-width:900px){
+  .pos{grid-template-columns:minmax(0,1fr) 400px;align-items:start}
+  .pos-pedido{margin-bottom:0;position:sticky;top:92px;height:calc(100vh - 110px);padding:0;display:flex;flex-direction:column;overflow:hidden}
+  .pedido-caja{display:flex;flex-direction:column;min-height:0;flex:1}
+  .pedido-cuerpo{flex:1;overflow:auto;padding:14px 14px 8px}
+  .pedido-pie{border-top:3px solid var(--linea);padding:10px 14px 14px;background:#fff}
+  .barra-cobro{display:none!important}
+}
+.vacio-pedido{text-align:center;color:var(--suave);padding:26px 8px;font-weight:700}
+.vacio-pedido .grande{font-size:3rem;display:block}
+.item{border:2px solid var(--linea);border-radius:16px;padding:10px;margin-bottom:10px;background:#fffdf6}
+.item .cab{display:flex;gap:8px;align-items:center;justify-content:space-between}
+.item .nombre{font-weight:900;font-size:1.05rem}
+.item .quitar{width:44px;height:44px;border-radius:50%;border:3px solid var(--rojo);background:#fff;color:var(--rojo);font-weight:900;font-size:1.1rem;cursor:pointer}
+.acomps{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.acomp{border:3px solid var(--linea);background:#fff;border-radius:999px;padding:.35rem .9rem;min-height:46px;font-weight:900;cursor:pointer}
+.acomp.si{border-color:var(--azul);background:var(--azul);color:#fff}
+.contador{display:flex;align-items:center;gap:10px}
+.contador button{width:52px;height:52px;border-radius:50%;border:3px solid var(--azul);background:#fff;color:var(--azul);font-size:1.6rem;font-weight:900;cursor:pointer;box-shadow:0 3px 0 var(--azul-osc)}
+.contador button:active{transform:translateY(2px);box-shadow:none}
+.contador b{min-width:2ch;text-align:center;font-size:1.4rem}
+.total-grande{display:flex;justify-content:space-between;align-items:center;background:var(--azul-osc);color:#fff;border-radius:18px;padding:.6rem 1rem;border-bottom:5px solid var(--amarillo)}
+.total-grande span{font-weight:800;color:var(--amarillo)} .total-grande b{font-size:2.2rem}
+.cambio{background:var(--amarillo);color:var(--azul-osc);border-radius:16px;padding:.6rem 1rem;font-weight:900;font-size:1.3rem;text-align:center;border:3px solid var(--amarillo-osc)}
+.cambio.falta{background:var(--rojo-claro);color:var(--rojo-osc);border-color:var(--rojo)}
+.barra-cobro{position:fixed;left:0;right:0;bottom:calc(66px + env(safe-area-inset-bottom));z-index:5;padding:8px 12px;background:var(--fondo);border-top:3px solid var(--linea)}
+.barra-cobro .btn{width:100%;display:flex;justify-content:space-between;align-items:center;min-height:64px;font-size:1.2rem}
+.hecho{text-align:center}
+.hecho .gigante{font-size:4rem;line-height:1}
+.hecho .cambio-gigante{font-size:2.6rem;font-weight:900;color:var(--azul-osc);background:var(--amarillo);border-radius:20px;padding:.5rem;margin:10px 0;border:4px solid var(--amarillo-osc)}
+
+.ticket{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.78rem;background:#fff;color:#000;border:2px dashed #777;padding:10px;white-space:pre;overflow:auto;border-radius:8px;user-select:text}
+.kiosko{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;text-align:center;background:linear-gradient(180deg,var(--azul-osc),var(--azul));color:#fff}
+.kiosko h1{color:#fff;font-size:2rem} .kiosko .suave{color:#dbe4ff}
+.kiosko .reloj{font-size:3.6rem;font-weight:900;color:var(--amarillo)}
+.kiosko .teclado button{border-color:#fff}
+.kiosko .puntos i{background:transparent;border-color:#fff} .kiosko .puntos i.lleno{background:var(--amarillo);border-color:var(--amarillo)}
+.kiosko a{color:var(--amarillo)}
+
+/* ---------- inicio de sesión */
+.entrada{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:18px;text-align:center;background:radial-gradient(circle at 20% 0,var(--azul) 0,var(--azul-osc) 70%)}
+.entrada .insignia{width:112px;height:112px;border-radius:30px;background:var(--rojo);border:6px solid var(--amarillo);display:grid;place-items:center;font-size:3.6rem;box-shadow:0 10px 0 rgba(0,0,0,.25);margin-bottom:14px}
+.entrada h1{color:#fff;font-size:2rem;margin:0}
+.entrada .lema{color:var(--amarillo);font-weight:800;letter-spacing:.08em;text-transform:uppercase;font-size:.8rem;margin-bottom:12px}
+.entrada .suave{color:#dbe4ff}
+.entrada .teclado button{border-color:#fff}
+.entrada .puntos i{background:transparent;border-color:#fff} .entrada .puntos i.lleno{background:var(--amarillo);border-color:var(--amarillo)}
+.entrada .btn.sec{background:transparent;color:#fff;border-color:#fff8;box-shadow:none}
+.entrada label{color:#fff}
+
+/* ---------- inicio del dueño */
+.panel{display:flex;gap:12px;align-items:center;text-decoration:none;color:inherit;background:#fff;border:3px solid var(--linea);border-radius:20px;padding:14px;box-shadow:var(--sombra);border-left:10px solid var(--rojo)}
+.panel:nth-child(3n+2){border-left-color:var(--amarillo)} .panel:nth-child(3n){border-left-color:var(--azul)}
+.panel .ico{font-size:2.2rem}
+.panel b{display:block;font-size:1.1rem;color:var(--azul-osc)}
+.panel small{color:var(--suave);font-weight:700}
+
+@media print{
+  body *{visibility:hidden} #zona-impresion,#zona-impresion *{visibility:visible}
+  #zona-impresion{position:absolute;left:0;top:0;width:100%} .ticket{border:0;font-size:11pt} .salto{page-break-after:always}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+
+.pedido-pie{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+.pedido-pie .total-grande{margin:0}
+@media(min-width:900px){.pedido-pie{margin-top:0}}
+@media(min-width:900px){.vacio-pedido{padding:26px 14px}}

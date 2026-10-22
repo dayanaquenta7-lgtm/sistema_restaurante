@@ -1,0 +1,23 @@
+# Dependencias
+node_modules/
+
+# Secretos y configuración local (NUNCA subir)
+.env
+.env.*
+!.env.example
+
+# Registros y copias de seguridad (pueden contener datos reales del negocio)
+*.log
+logs/
+backups/
+*.sql.gz
+*.dump
+
+# Sistema operativo y editores
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Instalador generado
+programa/dist/

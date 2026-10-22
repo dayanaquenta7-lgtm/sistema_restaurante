@@ -1,0 +1,38 @@
+{
+  "name": "Super Pollitos El Rey",
+  "short_name": "El Rey",
+  "description": "Caja, pollo, personal y sueldos de Super Pollitos El Rey",
+  "lang": "es",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0f2466",
+  "theme_color": "#0f2466",
+  "icons": [
+    {
+      "src": "/img/icono-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/img/icono-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/img/icono-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Marcar asistencia",
+      "url": "/asistencia.html"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><title>Primera vez</title>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'unsafe-inline'; script-src 'unsafe-inline'">
+<style>
+:root{--rojo:#d7191f;--amarillo:#ffc400;--azul:#1d3f9f;--azul-osc:#0f2466}
+*{box-sizing:border-box}body{margin:0;font-family:"Segoe UI",system-ui,sans-serif;background:#fffaf0;color:#1b1a24;-webkit-user-select:none}
+header{background:var(--azul-osc);color:#fff;padding:18px 24px;border-bottom:6px solid var(--amarillo);box-shadow:0 3px 0 var(--rojo)}
+header h1{margin:0;font-size:1.4rem}header p{margin:4px 0 0;color:var(--amarillo);font-weight:700;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase}
+main{padding:20px 24px}h2{color:var(--azul-osc);margin:0 0 4px}.s{color:#5d6075;margin:0 0 16px}
+label{display:block;font-weight:800;color:var(--azul-osc);margin:12px 0 4px}small{display:block;color:#5d6075;margin-top:3px}
+input{width:100%;border:3px solid #e8dfc8;border-radius:12px;padding:12px;font:inherit;-webkit-user-select:text}input:focus{outline:0;border-color:var(--azul)}
+button{margin-top:20px;width:100%;border:3px solid var(--rojo);background:var(--rojo);color:#fff;border-radius:16px;padding:16px;font:inherit;font-weight:900;font-size:1.1rem;box-shadow:0 4px 0 #a30f14;cursor:pointer}
+button:disabled{opacity:.5}#msg{margin-top:14px;padding:12px;border-radius:12px;font-weight:700;display:none}
+#msg.mal{display:block;background:#ffe3e1;color:#a30f14;border:2px solid var(--rojo)}#msg.ok{display:block;background:#e5ecfb;color:var(--azul-osc);border:2px solid var(--azul)}
+</style></head><body>
+<header><h1>Super Pollitos El Rey</h1><p>Primera vez en esta computadora</p></header>
+<main>
+<h2>Dejemos todo listo</h2><p class="s">Son 4 datos y se hace una sola vez. Después el sistema se abre solo, sin internet.</p>
+<form id="f">
+<label>Contraseña de MySQL</label><input id="mysql" type="password" autocomplete="off"><small>La que pusiste al instalar MySQL. Si no tiene contraseña, déjalo vacío.</small>
+<label>Nombre del dueño</label><input id="nombre" autocomplete="off" placeholder="Ejemplo: Don Pedro">
+<label>PIN del dueño (4 a 6 números)</label><input id="pin" inputmode="numeric" maxlength="6" autocomplete="off">
+<label>Contraseña del dueño (mínimo 8 caracteres)</label><input id="clave" type="password" autocomplete="off"><small>Con el nombre y esta contraseña el dueño entra al panel.</small>
+<button id="b" type="submit">Instalar y abrir el sistema</button>
+<div id="msg" role="status"></div>
+</form></main>
+<script>
+const $=(i)=>document.getElementById(i);
+$('f').addEventListener('submit',async(e)=>{e.preventDefault();const m=$('msg');m.className='';m.style.display='none';$('b').disabled=true;$('b').textContent='Instalando… un momento';
+const r=await window.asistente.instalar({mysqlClave:$('mysql').value,nombre:$('nombre').value,pin:$('pin').value,clave:$('clave').value});
+if(r.ok){m.className='ok';m.textContent='¡Listo! Abriendo el sistema…';}else{m.className='mal';m.textContent=r.error;$('b').disabled=false;$('b').textContent='Instalar y abrir el sistema';}});
+</script></body></html>
