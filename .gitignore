@@ -5,6 +5,10 @@ node_modules/
 .env
 .env.*
 !.env.example
+!.env.docker.example
+.env.docker
+backend/.env
+backend/node_modules/
 
 # Registros y copias de seguridad (pueden contener datos reales del negocio)
 *.log

@@ -1,0 +1,25 @@
+@base = http://localhost:3000/api
+
+### 1. Entrar como dueño
+POST {{base}}/auth/dueno
+Content-Type: application/json
+
+{ "nombre":  "nombre": "NOMBRE_DEL_DUEÑO", "clave": "CONTRASEÑA_DEL_DUEÑO"  }
+
+### 2. Listar sin buscar: devuelve TODAS (200)
+GET {{base}}/gaseosas
+
+### 3. Buscar "prueba": devuelve las que contienen "prueba" (200)
+GET {{base}}/gaseosas?buscar=prueba
+
+### 4. Buscar en MAYÚSCULAS: mismo resultado que la 3 (200)
+GET {{base}}/gaseosas?buscar=PRUEBA
+
+### 5. Sin coincidencias: lista vacía (200 y "gaseosas": [])
+GET {{base}}/gaseosas?buscar=xyz-no-existe
+
+### 6. Seguridad: comilla simple, sin error SQL (200)
+GET {{base}}/gaseosas?buscar=coca%27
+
+### 7. Seguridad: intento de inyección ' OR '1'='1 (200 y lista vacía, NO todas)
+GET {{base}}/gaseosas?buscar=%27%20OR%20%271%27%3D%271

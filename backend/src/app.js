@@ -4,6 +4,7 @@ const express = require('express');
 const helmet = require('helmet');
 const config = require('./config');
 const eventos = require('./eventos');
+const { pool } = require('./db');
 const { cargarSesion, requiereSesion } = require('./middleware/auth');
 const { verificarOrigen } = require('./middleware/seguridad-http');
 const { manejadorErrores, noEncontrada } = require('./middleware/errores');
@@ -33,7 +34,15 @@ function crearApp() {
   });
   app.use('/api', cargarSesion, verificarOrigen);
 
-  app.get('/api/salud', (req, res) => res.json({ ok: true, negocio: config.negocioNombre }));
+  // Confirma que el servidor responde Y que puede conectarse a MySQL (sin mostrar credenciales).
+  app.get('/api/salud', async (req, res) => {
+    try {
+      await pool.query('SELECT 1');
+      res.json({ ok: true, negocio: config.negocioNombre, base_de_datos: 'conectada' });
+    } catch {
+      res.status(503).json({ ok: false, negocio: config.negocioNombre, base_de_datos: 'sin conexión' });
+    }
+  });
   app.get('/api/eventos', requiereSesion, eventos.conectar);
 
   // Cada cambio exitoso avisa a los demás dispositivos conectados
@@ -51,6 +60,7 @@ function crearApp() {
   app.use('/api/caja', require('./rutas/caja'));
   app.use('/api', require('./rutas/ventas'));
   app.use('/api', require('./rutas/personal'));
+  app.use('/api/gaseosas', require('./rutas/gaseosas')); // CRUD: rutas → controladores → servicios
   app.use('/api', require('./rutas/catalogo'));
   app.use('/api', require('./rutas/inventario'));
   app.use('/api', require('./rutas/jornada'));

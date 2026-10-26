@@ -1,4 +1,4 @@
-// Aplica las mejoras de la base de datos (db/06_mejoras.sql) cada vez que arranca el sistema.
+// Aplica las mejoras de la base de datos (db/06_mejoras.sql y db/07_crud_gaseosas.sql) cada vez que arranca el sistema.
 // Es seguro repetirlo: solo reemplaza procedimientos y no toca los datos.
 const fs = require('fs');
 const path = require('path');
@@ -84,7 +84,7 @@ function dividirSql(texto) {
 }
 
 
-async function migrar(archivos = ['06_mejoras.sql']) {
+async function migrar(archivos = ['06_mejoras.sql', '07_crud_gaseosas.sql']) {
   const conexion = await mysql.createConnection({
     host: config.db.host, port: config.db.port, user: config.db.user, password: config.db.password,
     socketPath: config.db.socketPath, charset: 'utf8mb4', database: config.db.database, multipleStatements: false,

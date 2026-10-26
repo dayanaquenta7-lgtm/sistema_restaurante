@@ -12,7 +12,11 @@ const dineroPositivo = dinero.refine((v) => Number(v) > 0, 'El monto debe ser ma
 const pin = z.string().regex(/^\d{4,6}$/, 'El PIN son de 4 a 6 números');
 const id = z.coerce.number().int().positive();
 const entero = (min, max) => z.number().int().min(min).max(max);
-const texto = (min, max) => z.string().trim().min(min).max(max);
+const texto = (min, max) =>
+  z.string({ required_error: 'Este dato es obligatorio', invalid_type_error: 'Debe ser un texto' })
+    .trim()
+    .min(min, min === 1 ? 'No puede quedar vacío' : `Debe tener al menos ${min} caracteres`)
+    .max(max, `Debe tener como máximo ${max} caracteres`);
 
 const fecha = z
   .string()

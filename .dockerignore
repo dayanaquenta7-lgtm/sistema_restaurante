@@ -1,0 +1,27 @@
+# Lo que NO se copia al contexto de construcción de Docker.
+# (Está en la raíz porque docker-compose.yml construye desde la raíz: el backend
+#  necesita también frontend/ y db/.)
+
+# Dependencias locales: se instalan limpias dentro de la imagen con npm ci
+**/node_modules
+
+# Credenciales: el contenedor las recibe por variables de entorno
+**/.env
+**/.env.*
+!**/.env.example
+
+# Git, registros y copias de seguridad
+.git
+.gitignore
+**/npm-debug.log
+*.log
+logs/
+backups/
+
+# Cosas que el servidor no necesita
+programa/
+docs/
+db/pruebas/
+docker-compose.yml
+**/Dockerfile
+.dockerignore

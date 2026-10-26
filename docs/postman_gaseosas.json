@@ -1,0 +1,554 @@
+{
+  "info": {
+    "name": "Broastería - CRUD gaseosas (PDF 06)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "0. Salud (servidor + MySQL)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/api/salud",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "api",
+            "salud"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+              "pm.test('Base conectada', () => pm.expect(pm.response.json().base_de_datos).to.eql('conectada'));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "1. Iniciar sesión (dueño)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/api/auth/dueno",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "dueno"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"{{dueno_nombre}}\",\n  \"clave\": \"{{dueno_clave}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Responde 200', () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. CREATE - crear gaseosa",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/api/gaseosas",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "api",
+            "gaseosas"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"marca\": \"Gaseosa de prueba\",\n  \"tamano\": \"500 ml\",\n  \"precio\": 5.5\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Responde 201', () => pm.response.to.have.status(201));",
+              "pm.collectionVariables.set('id', pm.response.json().id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. READ - listar",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/api/gaseosas",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "api",
+            "gaseosas"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Responde 200', () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. READ - consultar una",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/api/gaseosas/{{id}}",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "api",
+            "gaseosas",
+            "{{id}}"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Responde 200', () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. UPDATE - actualizar",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/api/gaseosas/{{id}}",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "api",
+            "gaseosas",
+            "{{id}}"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"marca\": \"Gaseosa actualizada\",\n  \"tamano\": \"600 ml\",\n  \"precio\": 7\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Responde 200', () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. READ - verificar actualización",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/api/gaseosas/{{id}}",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "api",
+            "gaseosas",
+            "{{id}}"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+              "pm.test('Cambió la marca', () => pm.expect(pm.response.json().gaseosa.marca).to.eql('Gaseosa actualizada'));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Caso A - precio negativo",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/api/gaseosas",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "api",
+            "gaseosas"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"marca\": \"Producto\",\n  \"tamano\": \"1 L\",\n  \"precio\": -10\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Responde 400', () => pm.response.to.have.status(400));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Caso B - nombre corto",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/api/gaseosas",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "api",
+            "gaseosas"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"marca\": \"A\",\n  \"tamano\": \"1 L\",\n  \"precio\": 10\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Responde 400', () => pm.response.to.have.status(400));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Caso C - id inválido",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/api/gaseosas/abc",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "api",
+            "gaseosas",
+            "abc"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Responde 400', () => pm.response.to.have.status(400));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Caso D - inexistente",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/api/gaseosas/999999",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "api",
+            "gaseosas",
+            "999999"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Responde 404', () => pm.response.to.have.status(404));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Caso E - PUT incorrecto",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/api/gaseosas/{{id}}",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "api",
+            "gaseosas",
+            "{{id}}"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"marca\": \"X\",\n  \"tamano\": \"\",\n  \"precio\": -3\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Responde 400', () => pm.response.to.have.status(400));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. DELETE - eliminar",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/api/gaseosas/{{id}}",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "api",
+            "gaseosas",
+            "{{id}}"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Responde 200', () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "8. READ - consultar eliminada (404)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/api/gaseosas/{{id}}",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "api",
+            "gaseosas",
+            "{{id}}"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Responde 404', () => pm.response.to.have.status(404));"
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "dueno_nombre",
+      "value": "NOMBRE_DEL_DUEÑO"
+    },
+    {
+      "key": "dueno_clave",
+      "value": "CONTRASEÑA_DEL_DUEÑO"
+    },
+    {
+      "key": "id",
+      "value": ""
+    }
+  ]
+}

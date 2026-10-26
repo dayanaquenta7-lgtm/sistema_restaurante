@@ -6,7 +6,7 @@ const config = require('./config');
 const { dividirSql } = require('./migrar');
 
 const carpetaSql = path.join(__dirname, '..', '..', 'db');
-const ARCHIVOS = ['01_schema.sql', '02_logica.sql', '03_datos_iniciales.sql', '05_api.sql', '06_mejoras.sql'];
+const ARCHIVOS = ['01_schema.sql', '02_logica.sql', '03_datos_iniciales.sql', '05_api.sql', '06_mejoras.sql', '07_crud_gaseosas.sql','08_limite_precio.sql'];
 
 function adaptarNombreBase(sentencia, nombreBase) {
   // Los scripts dicen "broasteria"; aquí se usa el nombre configurado (DB_NAME o la base de pruebas)

@@ -1,0 +1,41 @@
+@base = http://localhost:3000/api
+
+### 1. Entrar como dueño
+POST {{base}}/auth/dueno
+Content-Type: application/json
+
+{ "nombre":  "nombre": "NOMBRE_DEL_DUEÑO", "clave": "CONTRASEÑA_DEL_DUEÑO"  }
+
+### 2. POST válido: precio 5000 (debe dar 201)
+# @name crear
+POST {{base}}/gaseosas
+Content-Type: application/json
+
+{ "marca": "Prueba limite", "tamano": "1 L", "precio": 5000 }
+
+### 3. POST inválido: precio 5000.01 (debe dar 400)
+POST {{base}}/gaseosas
+Content-Type: application/json
+
+{ "marca": "Prueba limite 2", "tamano": "1 L", "precio": 5000.01 }
+
+### 4. PUT válido: precio 4999.99 (debe dar 200)
+PUT {{base}}/gaseosas/{{crear.response.body.id}}
+Content-Type: application/json
+
+{ "marca": "Prueba limite", "tamano": "1 L", "precio": 4999.99 }
+
+### 5. PUT inválido: precio 5001 (debe dar 400)
+PUT {{base}}/gaseosas/{{crear.response.body.id}}
+Content-Type: application/json
+
+{ "marca": "Prueba limite", "tamano": "1 L", "precio": 5001 }
+
+### 6. GET: el precio sigue en 4999.99 (debe dar 200)
+GET {{base}}/gaseosas/{{crear.response.body.id}}
+
+### 7. Extra: precio 0 (debe dar 400)
+POST {{base}}/gaseosas
+Content-Type: application/json
+
+{ "marca": "Prueba cero", "tamano": "1 L", "precio": 0 }

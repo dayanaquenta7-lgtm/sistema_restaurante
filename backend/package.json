@@ -10,7 +10,8 @@
     "db:crear": "node scripts/db-setup.js",
     "db:recrear": "node scripts/db-setup.js --recrear --si",
     "crear-dueno": "node scripts/crear-dueno.js",
-    "test": "node scripts/db-setup.js --prueba --recrear --si && node --test tests/dia-completo.test.js && node scripts/db-setup.js --prueba --recrear --si && node --test tests/turno.test.js"
+    "test": "node scripts/db-setup.js --prueba --recrear --si && node --test tests/dia-completo.test.js && node scripts/db-setup.js --prueba --recrear --si && node --test tests/turno.test.js && node scripts/db-setup.js --prueba --recrear --si && node --test tests/gaseosas-crud.test.js",
+    "test:crud": "node scripts/db-setup.js --prueba --recrear --si && node --test tests/gaseosas-crud.test.js"
   },
   "engines": {
     "node": ">=20"

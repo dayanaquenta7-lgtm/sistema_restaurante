@@ -53,10 +53,14 @@ export async function pantallaPollos(el) {
       h('span', {}, h('b', {}, `${g.marca} ${g.tamano}`), h('small', { class: 'suave' }, ` · ${bs(g.precio)}`)),
       h('span', { class: 'fila' }, h('span', { class: `chip ${semaforo[g.semaforo]}` }, `${g.stock} en stock`),
         h('button', { class: 'btn sec chico', onclick: async () => {
-          const d = await preguntar(`${g.marca} ${g.tamano}`, [{ nombre: 'precio', etiqueta: 'Precio de venta (Bs)', tipo: 'dinero', valor: g.precio }, { nombre: 'minimo', etiqueta: 'Avisar cuando queden', tipo: 'entero', valor: g.stock_minimo }, { nombre: 'activo', etiqueta: 'Se vende', tipo: 'check', valor: g.activo }]);
-          if (!d) return; let cuerpo; try { cuerpo = { precio: aMonto(d.precio), stock_minimo: aEntero(d.minimo), activo: d.activo }; } catch (e) { return falla(e); }
-          if (await intentar(() => PATCH(`/gaseosas/${g.id}`, cuerpo), 'Guardado')) otra();
-        } }, 'Editar')))),
+          const d = await preguntar(`${g.marca} ${g.tamano}`, [{ nombre: 'marca', etiqueta: 'Marca', valor: g.marca }, { nombre: 'tamano', etiqueta: 'Tamaño', valor: g.tamano }, { nombre: 'precio', etiqueta: 'Precio de venta (Bs)', tipo: 'dinero', valor: g.precio }, { nombre: 'minimo', etiqueta: 'Avisar cuando queden', tipo: 'entero', valor: g.stock_minimo }, { nombre: 'activo', etiqueta: 'Se vende', tipo: 'check', valor: g.activo }]);
+          if (!d) return; let cuerpo; try { cuerpo = { marca: d.marca.trim(), tamano: d.tamano.trim(), precio: aMonto(d.precio), stock_minimo: aEntero(d.minimo), activo: d.activo }; } catch (e) { return falla(e); }
+          if (await intentar(() => PUT(`/gaseosas/${g.id}`, cuerpo), 'Guardado')) otra();
+        } }, 'Editar'),
+        h('button', { class: 'btn mal chico', title: 'Eliminar', 'aria-label': 'Eliminar', onclick: async () => {
+          if (!(await confirmar('Eliminar gaseosa', `¿Eliminar "${g.marca} ${g.tamano}"? Solo se puede si nunca tuvo ingresos ni ventas; si ya tiene historial, desactívala con "Editar".`, 'Sí, eliminar', true))) return;
+          if (await intentar(() => DEL(`/gaseosas/${g.id}`), 'Gaseosa eliminada')) otra();
+        } }, '🗑')))),
       gaseosas.some((g) => g.activo) && h('div', { class: 'fila', style: 'margin-top:10px' },
         h('button', { class: 'btn', onclick: () => listaConteo('Llegaron gaseosas', 'Escribe cuántas llegaron de cada una (deja en blanco las que no llegaron)', gaseosas.filter((g) => g.activo), 'ingreso', otra) }, 'Llegaron gaseosas'),
         h('button', { class: 'btn sec', onclick: () => listaConteo('Contar lo que queda', 'Escribe cuántas hay de cada una (deja en blanco las que no contaste)', gaseosas.filter((g) => g.activo), 'conteo', otra) }, 'Contar lo que queda'))));

@@ -1,6 +1,6 @@
 // Service worker: guarda las pantallas para que abran rápido. Los DATOS (/api) nunca se guardan:
 // sin conexión no se puede vender, para no perder el control del dinero y del stock.
-const VERSION = 'v2';
+const VERSION = 'v3';
 const ARCHIVOS = ['/', '/asistencia.html', '/css/app.css', '/js/main.js', '/js/nucleo.js', '/js/caja.js', '/js/dueno.js', '/js/asistencia.js', '/img/icono.svg', '/manifest.webmanifest'];
 
 self.addEventListener('install', (e) => { e.waitUntil(caches.open(VERSION).then((c) => c.addAll(ARCHIVOS)).then(() => self.skipWaiting())); });

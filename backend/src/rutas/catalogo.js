@@ -1,7 +1,7 @@
-// Menú (presas, aumentos, acompañamientos, recargo de "pura papa") y registro de gaseosas.
+// Menú (presas, aumentos, acompañamientos y recargo de "pura papa").
 const express = require('express');
-const { z, id, texto, dinero, entero } = require('../util/validacion');
-const { pool, conUsuario, transaccion, uno } = require('../db');
+const { z, id, dinero, entero } = require('../util/validacion');
+const { pool, conUsuario, uno } = require('../db');
 const { envolver, ErrorApp } = require('../util/errores');
 const { soloDueno, atencionODueno } = require('../middleware/auth');
 const { jornadaHoy } = require('../servicios/jornada');
@@ -126,110 +126,6 @@ router.patch(
   })
 );
 
-// ------------------------------------------------------------------ Gaseosas (las registra el dueño)
-
-router.get(
-  '/gaseosas',
-  soloDueno,
-  envolver(async (req, res) => {
-    const [gaseosas] = await pool.query(
-      'SELECT gaseosa_id AS id, marca, tamano, precio, stock_minimo, activo, stock, semaforo FROM v_stock_gaseosas ORDER BY activo DESC, marca, tamano'
-    );
-    res.json({ gaseosas: gaseosas.map((g) => ({ ...g, activo: !!g.activo, stock: Number(g.stock) })) });
-  })
-);
-
-router.post(
-  '/gaseosas',
-  soloDueno,
-  envolver(async (req, res) => {
-    const d = z
-      .object({ marca: texto(2, 60), tamano: texto(1, 30), precio: dinero, stock_minimo: entero(0, 1000).optional() })
-      .parse(req.body);
-    let minimo = d.stock_minimo;
-    if (minimo === undefined) {
-      const cfg = uno((await pool.query("SELECT valor FROM configuracion WHERE clave = 'stock_minimo_gaseosa'"))[0]);
-      minimo = cfg ? Number(cfg.valor) : 6;
-    }
-    const [r] = await conUsuario(req.usuario.id, (cx) =>
-      cx.query('INSERT INTO gaseosas (marca, tamano, precio, stock_minimo) VALUES (?, ?, ?, ?)', [d.marca, d.tamano, d.precio, minimo])
-    );
-    res.status(201).json({ id: r.insertId });
-  })
-);
-
-router.patch(
-  '/gaseosas/:id',
-  soloDueno,
-  envolver(async (req, res) => {
-    const gaseosaId = id.parse(req.params.id);
-    const d = z
-      .object({ precio: dinero.optional(), activo: z.boolean().optional(), stock_minimo: entero(0, 1000).optional() })
-      .refine((o) => Object.keys(o).length > 0, 'No enviaste ningún cambio')
-      .parse(req.body);
-    const sets = [];
-    const valores = [];
-    if (d.precio !== undefined) (sets.push('precio = ?'), valores.push(d.precio));
-    if (d.activo !== undefined) (sets.push('activo = ?'), valores.push(d.activo ? 1 : 0));
-    if (d.stock_minimo !== undefined) (sets.push('stock_minimo = ?'), valores.push(d.stock_minimo));
-    const [r] = await conUsuario(req.usuario.id, (cx) => cx.query(`UPDATE gaseosas SET ${sets.join(', ')} WHERE id = ?`, [...valores, gaseosaId]));
-    if (r.affectedRows === 0) throw new ErrorApp(404, 'Esa gaseosa no existe');
-    res.json({ ok: true });
-  })
-);
-
-const lineasIngreso = z
-  .array(z.object({ gaseosa_id: id, cantidad: z.number().int().min(1).max(5000) }))
-  .min(1)
-  .max(100);
-
-/** "Llegaron gaseosas": una sola pantalla con la lista y una casilla de cantidad por variedad. */
-router.post(
-  '/gaseosas/ingreso',
-  soloDueno,
-  envolver(async (req, res) => {
-    const d = z.object({ items: lineasIngreso, nota: texto(1, 200).optional() }).parse(req.body);
-    await transaccion(req.usuario.id, async (cx) => {
-      for (const l of d.items) {
-        const g = uno((await cx.query('SELECT id FROM gaseosas WHERE id = ?', [l.gaseosa_id]))[0]);
-        if (!g) throw new ErrorApp(404, 'Una de las gaseosas no existe');
-        await cx.query(
-          "INSERT INTO movimientos_gaseosa (gaseosa_id, tipo, cantidad, registrado_por, nota) VALUES (?, 'ingreso', ?, ?, ?)",
-          [l.gaseosa_id, l.cantidad, req.usuario.id, d.nota ?? null]
-        );
-      }
-    });
-    res.status(201).json({ ok: true, lineas: d.items.length });
-  })
-);
-
-/** "Contar lo que queda": el dueño escribe lo que contó y el sistema registra la diferencia. */
-router.post(
-  '/gaseosas/conteo',
-  soloDueno,
-  envolver(async (req, res) => {
-    const d = z
-      .object({ items: z.array(z.object({ gaseosa_id: id, contado: z.number().int().min(0).max(100000) })).min(1).max(100) })
-      .parse(req.body);
-    const diferencias = await transaccion(req.usuario.id, async (cx) => {
-      const salida = [];
-      for (const l of d.items) {
-        const g = uno((await cx.query('SELECT id, marca, tamano FROM gaseosas WHERE id = ? FOR UPDATE', [l.gaseosa_id]))[0]);
-        if (!g) throw new ErrorApp(404, 'Una de las gaseosas no existe');
-        const sistema = Number(uno((await cx.query('SELECT COALESCE(SUM(cantidad), 0) AS s FROM movimientos_gaseosa WHERE gaseosa_id = ?', [g.id]))[0]).s);
-        const dif = l.contado - sistema;
-        if (dif !== 0) {
-          await cx.query(
-            "INSERT INTO movimientos_gaseosa (gaseosa_id, tipo, cantidad, registrado_por, nota) VALUES (?, 'ajuste', ?, ?, 'Conteo físico')",
-            [g.id, dif, req.usuario.id]
-          );
-          salida.push({ gaseosa_id: g.id, nombre: `${g.marca} ${g.tamano}`, sistema, contado: l.contado, diferencia: dif });
-        }
-      }
-      return salida;
-    });
-    res.json({ ok: true, diferencias });
-  })
-);
+// Las gaseosas (CRUD, ingreso y conteo) están en rutas/gaseosas.js → controladores/ → servicios/.
 
 module.exports = router;

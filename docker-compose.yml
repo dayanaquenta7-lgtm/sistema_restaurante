@@ -1,0 +1,69 @@
+# Sistema de la broastería con Docker Compose: dos servicios que trabajan juntos.
+#   db  -> MySQL 8.4 (la base del sistema)
+#   app -> backend Node.js + Express (sirve también las pantallas)
+#
+# Uso (desde la raíz del proyecto):
+#   docker compose --env-file .env.docker config        # revisar la configuración
+#   docker compose --env-file .env.docker up -d --build # construir e iniciar
+#   docker compose --env-file .env.docker ps            # estado
+#   docker compose --env-file .env.docker logs app      # mensajes del backend
+#   docker compose --env-file .env.docker down          # detener (los datos quedan en el volumen)
+#   ¡No uses "down -v"! Borra el volumen mysql_data con todos los datos.
+
+services:
+  db:
+    image: mysql:8.4
+    restart: unless-stopped
+    command:
+      - --default-time-zone=-04:00                # Bolivia: "el día" cambia a medianoche local
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --log-bin-trust-function-creators=1       # el backend actualiza triggers/procedimientos al arrancar
+    environment:
+      MYSQL_DATABASE: ${DB_NAME:?Define DB_NAME en .env.docker}
+      MYSQL_USER: ${DB_USER:?Define DB_USER en .env.docker}
+      MYSQL_PASSWORD: ${DB_PASSWORD:?Define DB_PASSWORD en .env.docker}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?Define DB_ROOT_PASSWORD en .env.docker}
+      TZ: America/La_Paz
+    ports:
+      - "3307:3306"   # 3307 en tu equipo (no choca con tu MySQL local en 3306) -> 3306 dentro del contenedor
+    volumes:
+      - mysql_data:/var/lib/mysql
+      # Scripts de inicialización: solo se ejecutan la PRIMERA vez (directorio de datos vacío), en orden.
+      - ./db/01_schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+      - ./db/02_logica.sql:/docker-entrypoint-initdb.d/02_logica.sql:ro
+      - ./db/03_datos_iniciales.sql:/docker-entrypoint-initdb.d/03_datos_iniciales.sql:ro
+      - ./db/05_api.sql:/docker-entrypoint-initdb.d/05_api.sql:ro
+      # 06_mejoras.sql y 07_crud_gaseosas.sql los aplica el backend cada vez que arranca.
+    healthcheck:
+      # Por TCP (127.0.0.1): durante la inicialización MySQL no escucha en red, así que
+      # el servicio solo queda "healthy" cuando las tablas ya están creadas.
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u\"$$MYSQL_USER\" -p\"$$MYSQL_PASSWORD\" --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
+
+  app:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    restart: unless-stopped
+    env_file:
+      - ./backend/.env        # PIN_SECRET, NEGOCIO_NOMBRE, etc. (los valores de abajo tienen prioridad)
+    environment:
+      DB_HOST: db             # dentro de Docker se llega a MySQL por el NOMBRE del servicio, no por localhost
+      DB_PORT: 3306           # puerto INTERNO del contenedor de MySQL
+      DB_NAME: ${DB_NAME:?Define DB_NAME en .env.docker}
+      DB_USER: ${DB_USER:?Define DB_USER en .env.docker}
+      DB_PASSWORD: ${DB_PASSWORD:?Define DB_PASSWORD en .env.docker}
+      PORT: 3000
+      NODE_ENV: production
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  mysql_data:
