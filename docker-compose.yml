@@ -34,6 +34,7 @@ services:
       - ./db/02_logica.sql:/docker-entrypoint-initdb.d/02_logica.sql:ro
       - ./db/03_datos_iniciales.sql:/docker-entrypoint-initdb.d/03_datos_iniciales.sql:ro
       - ./db/05_api.sql:/docker-entrypoint-initdb.d/05_api.sql:ro
+      - ./db/docker_permisos.sql:/docker-entrypoint-initdb.d/99_permisos.sql:ro
       # 06_mejoras.sql y 07_crud_gaseosas.sql los aplica el backend cada vez que arranca.
     healthcheck:
       # Por TCP (127.0.0.1): durante la inicialización MySQL no escucha en red, así que
